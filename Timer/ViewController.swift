@@ -20,7 +20,10 @@ class ViewController: UIViewController {
     }
     func startTimer(time: Int){
         countdown = time
-        timer = Timer(timeInterval: 1.0, target: self, selector: #selector(onTimerCalled), userInfo: nil, repeats: true)
+        if timer != nil{
+            timer.invalidate()
+        }
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(onTimerCalled), userInfo: nil, repeats: true)
         timer.fire()
     }
     @IBAction func select30seconds(){
@@ -35,18 +38,23 @@ class ViewController: UIViewController {
     @IBAction func select10min(){
         startTimer(time: 600)
     }
-    @objc func onTimerCalled(){
+    func updateLabel(){
         let remainingMinutes: Int = countdown / 60
         let remainingSeconds: Int = countdown % 60
-        label.text = String (format: "%02d:%02d", remainingMinutes,
-                             remainingSeconds)
+        label.text = String(format: "%02d:%02d", remainingMinutes,
+                            remainingSeconds)
+    }
+    func showStopAlert(){
+        let stopAlert = UIAlertController(title: "タイマーが終了しました", message: nil, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default)
+        stopAlert.addAction (okAction)
+        present(stopAlert, animated: true)
+    }
+    @objc func onTimerCalled(){
+        updateLabel()
         countdown -= 1
         if countdown < 0 {
-            let stopAlert = UIAlertController(title: "タイマーが終了しました",
-                message: nil, preferredStyle: .alert)
-            let okAction = UIAlertAction(title: "OK", style: .default)
-            stopAlert.addAction (okAction)
-            present(stopAlert, animated: true)
+            showStopAlert()
             timer.invalidate()
         }
     }
