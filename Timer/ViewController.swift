@@ -26,6 +26,7 @@ class ViewController: UIViewController {
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(onTimerCalled), userInfo: nil, repeats: true)
         timer.fire()
     }
+    
     @IBAction func select30seconds(){
         startTimer(time: 30)
     }
